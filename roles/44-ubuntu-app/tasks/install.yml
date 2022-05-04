@@ -1,0 +1,10 @@
+---
+- name: install ubuntu app of office
+  apt:
+    name:
+    - thunderbird-locale-ja
+    - libreoffice-help-ja
+    state: latest
+    update_cache: yes
+  become: yes
+

@@ -1,0 +1,53 @@
+---
+  - name: "set noproxy in {{ ansible_user }} .profile from localhost"
+    lineinfile:
+      path: /home/{{ ansible_user }}/.profile
+      regexp: '^export no_proxy='
+      insertafter: EOF
+      line: "{{ item }}"
+    with_items:
+      - ' '
+      - '### set proxy'
+      - "export no_proxy={{ lookup('env','no_proxy') }}"
+    when: noproxy_str is undefined
+
+  - name: "set noproxy in {{ ansible_user }} .profile by noproxy_str"
+    lineinfile:
+      path: /home/{{ ansible_user }}/.profile
+      regexp: '^export no_proxy='
+      insertafter: EOF
+      line: "{{ item }}"
+    with_items:
+      - ' '
+      - '### set proxy'
+      - "export no_proxy={{ noproxy_str }}"
+    when: noproxy_str is defined
+
+  - name: "set proxy in {{ ansible_user }} .profile from localhost"
+    lineinfile:
+      path: /home/{{ ansible_user }}/.profile
+      regexp: '^export {{ item }}='
+      insertafter: EOF
+      line: "{{ 'export ' + item + '=' + lookup('env','http_proxy') }}"
+    with_items:
+      - ftp_proxy
+      - http_proxy
+      - https_proxy
+      - HTTP_PROXY
+      - HTTPS_PROXY
+    when: proxy_url is undefined
+
+  - name: "set proxy in {{ ansible_user }} .profile by proxy_url"
+    lineinfile:
+      path: /home/{{ ansible_user }}/.profile
+      regexp: '^export {{ item }}='
+      insertafter: EOF
+      line: "export {{ item }}={{ proxy_url }}"
+    with_items:
+      - ftp_proxy
+      - http_proxy
+      - https_proxy
+      - HTTP_PROXY
+      - HTTPS_PROXY
+    when: proxy_url is defined
+

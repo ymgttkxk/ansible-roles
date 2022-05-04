@@ -1,0 +1,15 @@
+---
+- name: install ubuntu desktop
+  apt:
+    name:
+    - ubuntu-desktop
+    - ibus-mozc
+    - x11-xkb-utils
+    - fonts-noto-cjk-extra
+    - language-pack-gnome-ja
+    - gnome-user-docs-ja
+    - firefox-locale-ja
+    state: latest
+    update_cache: yes
+  become: yes
+

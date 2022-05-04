@@ -1,0 +1,5 @@
+---
+# /etc/apt/apt.conf.d/50unattended-upgrades
+auto_reboot: "true"
+reboot_time: 02:00
+

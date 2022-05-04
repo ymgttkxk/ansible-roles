@@ -1,0 +1,4 @@
+---
+- name: set proxy for {{ ansible_user }}
+  include_tasks: proxy.yml
+

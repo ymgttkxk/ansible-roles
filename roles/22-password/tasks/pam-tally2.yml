@@ -1,0 +1,35 @@
+---
+### set pam_tally2.so
+- name: set pam_tally2.so
+  lineinfile:
+    path: "/etc/pam.d/{{ item.file }}"
+#    backrefs: yes
+    state: present
+    regexp: '{{ item.regexp }}'
+    insertbefore: '^# here are'
+    line: '{{ item.line }}'
+  become: yes
+  with_items:
+  - file: common-auth
+    regexp: ' pam_tally2.so'
+    line: 'auth    required        pam_tally2.so deny={{ tally2_deny }} unlock_time={{ tally2_unlock_time }}'
+  - file: common-account
+    regexp: ' pam_tally2.so$'
+    line: 'account required        pam_tally2.so'
+  when: secure > 0
+
+- name: unset pam_tally2.so
+  lineinfile:
+    path: "/etc/pam.d/{{ item.file }}"
+#    backrefs: yes
+    state: present
+    regexp: '{{ item.regexp }}'
+    state: absent
+  become: yes
+  with_items:
+  - file: common-auth
+    regexp: ' pam_tally2.so deny'
+  - file: common-account
+    regexp: ' pam_tally2.so$'
+  when: secure == 0 or secure is undefined
+

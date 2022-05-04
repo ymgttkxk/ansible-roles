@@ -1,0 +1,17 @@
+---
+# ssh
+- name: get param of sshd (default is password allow)
+  include_vars: sshd-config.yml
+
+- name: set sshd
+  include_tasks: sshd-config.yml
+
+- name: debug
+  debug: var=secure
+
+# sshd src address
+- name: get allow hosts
+  include_vars: hosts.yml
+
+- name: set allow hosts
+  include_tasks: hosts.yml

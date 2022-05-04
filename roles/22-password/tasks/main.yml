@@ -1,0 +1,14 @@
+---
+# password policy
+- name: get param of password quality checking and generating random passwords
+  include_vars: password-policy.yml
+
+- name: set password quality checking and generating random passwords
+  include_tasks: password-policy.yml
+
+# pam policy
+- name: get param of pam-tally2
+  include_vars: pam-tally2.yml
+
+- name: set pam-tally2
+  include_tasks: pam-tally2.yml

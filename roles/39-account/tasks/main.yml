@@ -1,0 +1,19 @@
+---
+#- name: debug control
+#  debug: var=control
+
+- name: add group
+  vars:
+    event: "add" 
+  include_tasks: group.yml
+
+- name: add or del user
+  vars: 
+  - account_path: "/home/{{ control_user }}/account/user"
+  include_tasks: user.yml
+
+- name: del group
+  vars:
+    event: "del"
+  include_tasks: group.yml
+

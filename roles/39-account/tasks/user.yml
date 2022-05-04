@@ -1,0 +1,89 @@
+---
+- name: debug user
+  debug: var=user
+
+- name: adduser
+  register: result
+  user:
+    name: "{{ user.name }}"
+    uid: "{{ user.uid }}"
+    group: "{{ user.main_group }}"
+    groups: "{{ user.sub_groups }}"
+    append: no
+    shell: "{{ user.shell }}"
+    comment: "{{ user.mail }}"
+  become: true
+  when: user.avail == 'o'
+
+- name: debug adduser
+  debug: var=result
+  when: user.avail == 'o'
+
+#- name: debug facts
+#  debug:
+#    msg: "{{ ansible_facts }}"
+
+# @control
+# done  : onetime password file is not avail
+#   root gen onetime password
+# clear : onetime password file is avail
+#   user change password
+# change: onetime password file is empty
+#   password changed and not gen onetime password
+- name: stat onetime password file
+  register: onepassfile
+  stat:
+    path: "{{ account_path }}/{{ user.name }}"
+  become: yes
+  delegate_to: "{{ control_ipv4 }}"
+
+- name: debug host
+  debug:
+    msg: "avail {{ user.avail }}, stat {{ onepassfile.stat.exists }}, inventory_hostname {{ inventory_hostname }}, control {{ control }}, control_ipv4 {{ control_ipv4 }}"
+
+- name: generate onetime password at onetime password file is not avail on control
+  include_tasks: password_onetime.yml
+  with_items:
+  - name: "{{ user.name }}"
+    file: "{{ account_path }}/{{ user.name }}"
+  loop_control:
+    loop_var: shadow
+  when:
+  - control == inventory_hostname
+  - user.avail == 'o'
+  - onepassfile.stat.exists == false
+
+- name: change password at onetime password file is avail on NOT control
+  include_tasks: password_check.yml
+  with_items:
+  - name: "{{ user.name }}"
+    file: "{{ account_path }}/{{ user.name }}"
+  loop_control:
+    loop_var: shadow
+  when:
+  - control != inventory_hostname
+  - user.avail == 'o'
+  - onepassfile.stat.exists == true
+
+
+- name: generate ssh key
+  user:
+    name: "{{ user.name }}"
+    generate_ssh_key: yes
+    ssh_key_type: rsa
+    ssh_key_bits: 4096
+    ssh_key_comment: "{{ user.name }}@{{ inventory_hostname }}"
+#     ssh_key_file: .ssh/id_rsa
+#     ssh_key_passphrase: "{{ sshpass }}"
+  become: true
+  when: user.avail == 'o' and result.changed == true
+
+
+- name: deluser
+  user:
+    name: "{{ user.name }}"
+    state: absent
+    remove: yes
+  become: true
+  when: user.avail == 'x'
+

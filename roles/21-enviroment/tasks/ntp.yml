@@ -1,0 +1,38 @@
+---
+### set ntp host
+- name: get NTP hosts on localhost
+  register: ntphost
+  command: grep ^NTP /etc/systemd/timesyncd.conf
+  delegate_to: localhost
+  failed_when: no
+  when: ntphosts is undefined
+
+- name: debug ntphost
+  debug: var=ntphost.stdout
+  when: ntphosts is undefined
+
+- name: set NTP host from localhost
+  lineinfile:
+    path: /etc/systemd/timesyncd.conf
+    regexp: '^NTP='
+    insertafter: '^#NTP='
+    line: "{{ ntphost.stdout }}"
+  become: true
+  when: ntphosts is undefined and ntphost.stdout is match('^NTP')
+
+- name: set NTP host by ntphosts
+  lineinfile:
+    path: /etc/systemd/timesyncd.conf
+    regexp: '^NTP='
+    insertafter: '^#NTP='
+    line: "NTP={{ ntphosts }}"
+  become: true
+  when: ntphosts is defined
+
+# restart ntpd
+- name: restart ntp
+  service:
+    name: systemd-timesyncd
+    state: restarted
+  become: true
+

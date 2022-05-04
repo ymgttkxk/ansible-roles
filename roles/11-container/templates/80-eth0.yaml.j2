@@ -1,0 +1,12 @@
+network:
+  ethernets:
+    eth0:
+      dhcp4: false
+      addresses: [{{ eth0_ipv4 }}/24]
+      gateway4: {{ eth0_gw }}
+      nameservers:
+        addresses: [{{ eth0_ns }}]
+      wakeonlan: true
+      dhcp6: true
+      optional: true
+

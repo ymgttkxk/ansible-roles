@@ -1,0 +1,14 @@
+---
+- name: install rdp
+  apt:
+    name:
+    - xserver-xorg-core
+    - xorgxrdp
+    - xrdp
+    state: latest
+  become: yes
+
+- name: do session setting script
+  script: enhanced-session-mode.sh
+  become: yes
+

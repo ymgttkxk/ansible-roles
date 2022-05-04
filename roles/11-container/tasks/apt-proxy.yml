@@ -1,0 +1,15 @@
+---
+# set apt proxy file
+- name: copy apt proxy file to /etc/apt/apt.conf.d/{{ apt_proxy_file }}
+  become: yes
+  command: lxc file push /etc/apt/apt.conf.d/{{ apt_proxy_file }} {{ inventory_hostname }}/etc/apt/apt.conf.d/
+  delegate_to: localhost
+  failed_when: no
+  when: proxy > 0 and apt_proxy_file is defined
+
+- name: remove apt proxy file /etc/apt/apt.conf.d/{{ apt_proxy_file }}
+  become: yes
+  command: lxc exec {{ inventory_hostname }} rm /etc/apt/apt.conf.d/{{ apt_proxy_file }}
+  delegate_to: localhost
+  failed_when: no
+  when: proxy == 0 and apt_proxy_file is defined

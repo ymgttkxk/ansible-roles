@@ -1,0 +1,7 @@
+---
+- name: install ubuntu desktop packages
+  include_tasks: install.yml
+
+- name: set keyboard layout to japanese
+  include_tasks: keyboard_layout.yml
+

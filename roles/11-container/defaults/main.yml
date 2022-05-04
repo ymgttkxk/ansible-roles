@@ -1,0 +1,9 @@
+### launch-container.yml
+pool: fixed
+
+### apt-proxy.yml
+proxy: 0
+
+### security.yml
+sec_nest: 0
+

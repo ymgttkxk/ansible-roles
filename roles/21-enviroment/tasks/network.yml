@@ -1,0 +1,14 @@
+---
+- name: template of fixed ip addr
+  template:
+    dest: "/etc/netplan/70-fixip.yaml"
+    src: 70-fixip.j2
+    owner: "root"
+    group: "root"
+    mode: '0644'
+  become: yes
+
+- name: netplan reload
+  command: netplan apply
+  become: yes
+

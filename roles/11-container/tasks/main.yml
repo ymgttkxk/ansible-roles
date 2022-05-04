@@ -1,0 +1,25 @@
+---
+- name: debug event
+  debug: var=event
+
+- include_tasks: launch-container.yml
+  when: event == 'add'
+
+- include_tasks: apt-proxy.yml
+  when: event == 'add'
+
+- include_tasks: admin.yml
+  when: event == 'add'
+
+- include_tasks: static-ipv4.yml
+  when: event == 'add'
+
+- include_tasks: security.yml
+  when: event == 'add'
+
+- include_tasks: known-hosts.yml
+  when: event == 'add'
+
+- include_tasks: delete-container.yml
+  when: event == 'del'
+

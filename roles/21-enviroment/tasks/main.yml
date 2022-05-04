@@ -1,0 +1,28 @@
+---
+# minimal
+- name: install minimal package
+  include_tasks: apt.yml
+
+- name: set DNS
+  include_tasks: dns.yml
+
+- name: set NTP
+  include_tasks: ntp.yml
+
+- name: set locale & timezone
+  include_tasks: locale.yml
+
+# update package
+- name: get param of unattended-upgrade
+  include_vars: unattended-upgrade.yml
+
+- name: set unattended-upgrade
+  include_tasks: unattended-upgrade.yml
+
+# fixed ip address
+- name: set fixed ip address
+  include_tasks: network.yml
+  when:
+  - eth_name is defined
+  - eth_ipv4 is defined
+

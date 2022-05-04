@@ -1,0 +1,44 @@
+---
+# setup openssh server
+- name: install ssh server
+  become: yes
+  command: lxc exec {{ inventory_hostname }} -- apt install -y openssh-server
+  delegate_to: localhost
+  failed_when: no
+
+- name: enable ssh server
+  become: yes
+  command: lxc exec {{ inventory_hostname }} -- systemctl enable sshd
+  delegate_to: localhost
+  failed_when: no
+
+- name: start ssh server
+  become: yes
+  command: lxc exec {{ inventory_hostname }} -- systemctl start sshd
+  delegate_to: localhost
+  failed_when: no
+
+# setup public-key cryptography
+- name: ssh key generate to make .ssh directory
+  become: yes
+  command: lxc exec {{ inventory_hostname }} -- su -c "ssh-keygen -t rsa -b 4096 -f /home/{{ ansible_user }}/.ssh/id_rsa -N '' -C 'ubuntu@hoge'" ubuntu
+  delegate_to: localhost
+  failed_when: no
+
+- name: set authorized key of local user (overwrite!)
+  become: yes
+  command: lxc file push {{ lookup('env', 'HOME') }}/.ssh/id_rsa.pub {{ inventory_hostname }}/home/{{ ansible_user }}/.ssh/authorized_keys
+  delegate_to: localhost
+  failed_when: no
+
+- name: chmod authorized key
+  become: yes
+  command: lxc exec {{ inventory_hostname }} -- chmod 0600 /home/{{ ansible_user }}/.ssh/authorized_keys
+  delegate_to: localhost
+  failed_when: no
+
+- name: chown authorized key
+  become: yes
+  command: lxc exec {{ inventory_hostname }} -- chown ubuntu:ubuntu /home/{{ ansible_user }}/.ssh/authorized_keys
+  delegate_to: localhost
+  failed_when: no

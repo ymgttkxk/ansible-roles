@@ -1,0 +1,36 @@
+---
+### fixed IPv4 address to eth0
+- name: add static ipv4 address
+  become: yes
+  command: "lxc exec {{ inventory_hostname }} ip addr change {{ eth0_ipv4 }}/24 dev eth0"
+  delegate_to: localhost
+
+- name: reset the connection
+  meta: reset_connection
+
+- name: Wait for the network device to reload
+  wait_for_connection:
+    delay: 5
+
+- name: copy netplan file for static ipv4 address
+  template:
+    src: 80-eth0.yaml.j2
+    dest: /etc/netplan/80-eth0.yaml
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+
+- name: netplan apply for static ipv4 address
+  become: yes
+  command: "lxc exec {{ inventory_hostname }} netplan apply"
+  delegate_to: localhost
+
+- name: reset the connection 2
+  meta: reset_connection
+
+- name: Wait for the network device to reload 2
+  wait_for_connection:
+    delay: 5
+
+

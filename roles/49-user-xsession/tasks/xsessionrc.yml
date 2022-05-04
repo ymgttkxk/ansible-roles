@@ -1,0 +1,32 @@
+---
+- name: copy xsessionrc
+  copy:
+    src: xsessionrc
+    dest: "/home/{{ user.name }}/.xsessionrc"
+    owner: "{{ user.name }}"
+    group: "{{ user.main_group }}"
+    mode: 0664
+  become: yes
+  when: user.avail == 'o'
+
+- name: make directory of .config/autostart
+  file:
+    path: "/home/{{ user.name }}/.config/autostart"
+    state: directory
+    owner: "{{ user.name }}"
+    group: "{{ user.main_group }}"
+    mode: '0755'
+    recurse: yes
+  become: yes
+  when: user.avail == 'o'
+
+- name: copy setxkbmap.desktop for japanese keyboard map on gnome
+  copy:
+    src: setxkbmap.desktop
+    dest: "/home/{{ user.name }}/.config/autostart/setxkbmap.desktop"
+    owner: "{{ user.name }}"
+    group: "{{ user.main_group }}"
+    mode: 0664
+  become: yes
+  when: user.avail == 'o'
+

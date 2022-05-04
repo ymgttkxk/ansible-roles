@@ -1,0 +1,57 @@
+---
+### set resolv.conf
+# fetch host resolv.conf
+- name: get resolved DNS on localhost
+  register: dnshost
+  command: grep ^DNS /etc/systemd/resolved.conf
+  delegate_to: localhost
+  failed_when: no
+  when: dnshosts is undefined
+
+- name: debug dnshost
+  debug: var=dnshost.stdout
+  when: dnshosts is undefined
+
+- name: set resolved DNS from localhost
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^DNS='
+    insertafter: '^#DNS='
+    line: "{{ dnshost.stdout }}"
+  become: true
+  when: dnshosts is undefined and dnshost.stdout is match('^DNS')
+
+- name: set resolved DNS by dnshosts
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^DNS='
+    insertafter: '^#DNS='
+    line: "DNS={{ dnshosts }}"
+  become: true
+  when: dnshosts is defined
+
+- name: set DNSStubListener is no
+  lineinfile:
+    path: /etc/systemd/resolved.conf
+    regexp: '^DNSStubListener='
+    insertafter: '^#DNSStubListener'
+    line: "DNSStubListener=no"
+  become: true
+
+# change from stub-resolv.conf to resolv.conf
+- name: link not stub-resolv.conf/resolv.conf
+  file:
+    path: /etc/resolv.conf
+    state: link
+    src: /run/systemd/resolve/resolv.conf
+    owner: root
+    group: root
+  become: true
+
+# restart resolver
+- name: restart resolver
+  service:
+    name: systemd-resolved
+    state: restarted
+  become: true
+

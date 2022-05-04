@@ -1,0 +1,19 @@
+---
+- name: apt update & upgrade
+  apt:
+    name: "*"
+    state: latest
+    update_cache: yes
+    autoclean: yes
+    autoremove: yes
+  become: true
+
+- name: Install avahi-daemon, language-pack-ja, btrfs
+  apt:
+    name:
+      - language-pack-ja
+      - btrfs-progs
+#      - avahi-daemon
+    state: latest
+  become: true
+

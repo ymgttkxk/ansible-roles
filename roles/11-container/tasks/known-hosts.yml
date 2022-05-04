@@ -1,0 +1,50 @@
+---
+### clear old known_hosts
+# ssh-keygen -R target, cause of REMOTE HOST IDENTIFICATION HAS CHANGED!
+- name: "delete entry in known_hosts by hostname"
+  command: ssh-keygen -f {{ lookup('env', 'HOME') }}/.ssh/known_hosts -R {{ item }}
+  delegate_to: localhost
+  with_items:
+  - "{{ inventory_hostname }}"
+  - "{{ inventory_hostname }}.lxd"
+  failed_when: no
+
+# hereafter, can use ssh login by ID:ubuntu
+- name: gather facts
+  become: yes
+  setup:
+
+- name: Info container (debug)
+  debug: var=ansible_facts
+  when: debug is defined
+
+- name: Info container
+  debug: var=ansible_facts.default_ipv4
+  when: debug is undefined
+
+- name: "delete entry in known_hosts by IPv4 address"
+  command: ssh-keygen -f {{ lookup('env', 'HOME') }}/.ssh/known_hosts -R {{ item }}
+  delegate_to: localhost
+  with_items:
+  - "{{ ansible_facts.all_ipv4_addresses }}"
+  failed_when: no
+
+
+#- name: sudo nopassword
+#  become: yes
+#  lineinfile:
+#    path: /etc/sudoers.d/admin_ubuntu
+#    create: yes
+#    regexp: '^ubuntu '
+#    insertafter: EOF
+#    line: 'ubuntu ALL=NOPASSWD: ALL'
+
+
+##- name: disable auto upgrade packages
+#- name: disable auto upgrade packages
+#  replace:
+#    path: /etc/apt/apt.conf.d/20auto-upgrades
+#    regexp: '\s"\d+"$'
+#    replace: ' "0"'
+#  become: true
+

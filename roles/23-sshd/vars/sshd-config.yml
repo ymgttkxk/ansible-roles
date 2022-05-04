@@ -1,0 +1,4 @@
+---
+# /etc/ssh/sshd_config
+auth_password: "yes"
+

@@ -1,0 +1,16 @@
+---
+- name: Set locale to {{ locate }}
+  locale_gen:
+    name: "{{ locate }}"
+  become: true
+
+- name: Set language LANG={{ lang }} & LANGUAGE={{ language }}
+  command:
+    cmd: localectl set-locale LANG={{ lang }} LANGUAGE="{{ language }}"
+  become: true
+
+- name: Set timezone to {{ timezone }}
+  timezone:
+    name: "{{ timezone }}"
+  become: true
+

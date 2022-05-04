@@ -1,0 +1,21 @@
+---
+- name: unset rdp proxy
+  command: "lxc config device remove {{ inventory_hostname }} rdp_proxy"
+  delegate_to: localhost
+  become: yes
+  failed_when: no
+
+- name: set rdp proxy
+  command: "lxc config device add {{ inventory_hostname }} rdp_proxy proxy listen=tcp:0.0.0.0:{{ rdp_port }} connect=tcp:{{ inventory_hostname }}:3389 bind=host"
+  delegate_to: localhost
+  become: yes
+  failed_when: no
+  when: rdp_port is defined
+
+- name: unset rdp proxy
+  command: "lxc config device remove {{ inventory_hostname }} rdp_proxy"
+  delegate_to: localhost
+  become: yes
+  failed_when: no
+  when: rdp_port is undefined
+

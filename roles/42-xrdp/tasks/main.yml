@@ -1,0 +1,4 @@
+---
+   - include: tasks/setup_xrdp.yml
+#   - include: tasks/selfsigned_certificate.yml
+

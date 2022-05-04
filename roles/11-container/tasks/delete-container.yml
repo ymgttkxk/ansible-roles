@@ -1,0 +1,17 @@
+---
+- name: stop & delete container
+  lxd_container:
+    name: "{{ inventory_hostname }}"
+    state: absent
+    force_stop: yes
+  delegate_to: localhost
+  become: yes
+
+- name: delete in known_hosts
+  known_hosts:
+    path: "{{ lookup('env', 'HOME') }}/.ssh/known_hosts"
+    name: "{{ inventory_hostname }}.lxd"
+    state: absent
+  delegate_to: localhost
+  become: yes
+

@@ -1,0 +1,59 @@
+---
+#
+#- name: debug
+#  debug:
+#   msg: "{{ auth_password }}"
+
+### set sshd config
+- name: set NO root logon
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    insertafter: '^#PermitRootLogin'
+    line: "PermitRootLogin no"
+  become: true
+
+
+- name: set allow password
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+    insertafter: '^#PasswordAuthentication'
+    line: "PasswordAuthentication {{ auth_password }}"
+  become: true
+  when: auth_password is defined
+
+- name: unset allow password
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^PasswordAuthentication'
+    state: absent
+  become: true
+  when: auth_password is undefined
+
+
+- name: set listen address
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^ListenAddress'
+    insertafter: '^#ListenAddress'
+    line: "ListenAddress {{ ssh_listen }}"
+  become: true
+  when: ssh_listen is defined
+
+- name: unset listen address
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^ListenAddress'
+    state: absent
+  become: true
+  when: ssh_listen is undefined
+
+
+# restart sshd
+- name: restart sshd
+  service:
+    name: ssh
+    state: restarted
+  become: true
+

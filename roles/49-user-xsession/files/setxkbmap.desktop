@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=setxkbmap jp
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[ja_JP]=keyboard-map
+Name=japanese keyboard map
+Comment[ja_JP]=japanese keyboard map
+Comment=japanese keyboard map

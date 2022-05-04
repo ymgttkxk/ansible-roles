@@ -1,0 +1,26 @@
+---
+- name: debug group
+  debug: var=group
+
+- name: debug event
+  debug: var=event
+
+- name: groupadd
+  group:
+    name: "{{ group.name }}"
+    gid: "{{ group.gid }}"
+    state: present
+  become: true
+  when:
+  - event == 'add'
+  - group.avail == 'o'
+
+- name: groupdel
+  group:
+    name: "{{ group.name }}"
+    state: absent
+  become: true
+  when:
+  - event == 'del'
+  - group.avail == 'x'
+

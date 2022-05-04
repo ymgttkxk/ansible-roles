@@ -1,0 +1,62 @@
+---
+#
+- name: enable autoremove
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^Unattended-Upgrade::Remove-Unused-Dependencies'
+    insertafter: '^//Unattended-Upgrade::Remove-Unused-Dependencies'
+    line: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";'
+  become: yes
+
+- name: enable autoremove kernel
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^Unattended-Upgrade::Remove-Unused-Kernel-Packages'
+    insertafter: '^//Unattended-Upgrade::Remove-Unused-Kernel-Packages'
+    line: 'Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";'
+  become: yes
+
+- name: enable syslog
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^Unattended-Upgrade::SyslogEnable'
+    insertafter: '^//Unattended-Upgrade::SyslogEnable'
+    line: 'Unattended-Upgrade::SyslogEnable "true";'
+  become: yes
+
+
+- name: enable reboot
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^Unattended-Upgrade::Automatic-Reboot '
+    insertafter: '^//Unattended-Upgrade::Automatic-Reboot '
+    line: 'Unattended-Upgrade::Automatic-Reboot "{{ auto_reboot }}";'
+  become: yes
+  when: auto_reboot is defined
+
+- name: disable reboot
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^Unattended-Upgrade::Automatic-Reboot '
+    state: absent
+  become: yes
+  when: auto_reboot is undefined
+
+
+- name: set reboot time at {{ reboot-time }}
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^Unattended-Upgrade::Automatic-Reboot-Time'
+    insertafter: '^//Unattended-Upgrade::Automatic-Reboot-Time'
+    line: 'Unattended-Upgrade::Automatic-Reboot-Time "{{ reboot_time }}";'
+  become: yes
+  when: auto_reboot is defined
+
+- name: unset reboot time at {{ reboot-time }}
+  lineinfile:
+    path: /etc/apt/apt.conf.d/50unattended-upgrades
+    regexp: '^Unattended-Upgrade::Automatic-Reboot-Time'
+    state: absent
+  become: yes
+  when: auto_reboot is undefined
+

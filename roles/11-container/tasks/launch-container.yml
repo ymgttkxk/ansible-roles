@@ -1,0 +1,42 @@
+---
+### launch container
+- name: info parameters
+  debug:
+    msg: "INFO: image:{{ image }}, name:{{ inventory_hostname }}, storage:{{ pool }}"
+
+- name: init container
+  become: yes
+  command: lxc init {{ image }} {{ inventory_hostname }} -s {{ pool }}
+  delegate_to: localhost
+  failed_when: no
+
+- name: start container
+  become: yes
+  register: launch
+  command: lxc start {{ inventory_hostname }}
+  delegate_to: localhost
+  failed_when: no
+
+- name: info container
+  debug:
+    msg: "INFO: END:{{ launch.end }}, DELTA:{{ launch.delta }}, START:{{ launch.start }}"
+  when: launch.end is defined and launch.delta is defined and launch.start is defined
+
+- name: wait for start container
+  become: yes
+  register: result
+  shell: lxc exec {{ inventory_hostname }} -- systemctl is-system-running
+  delegate_to: localhost
+  ignore_errors: True
+  until: result.stdout == 'degraded' or result.stdout == 'running'
+  retries: 30
+  delay: 1
+  failed_when:
+  - result.stdout == 'maintenance'
+  - result.stdout == 'stopping'
+  - result.stdout == 'offline'
+  - result.stdout == 'unknown'
+
+- name: Info systemctl
+  debug:
+    msg: "INFO: RC:{{ result.rc }}, STDOUT:{{ result.stdout }}"

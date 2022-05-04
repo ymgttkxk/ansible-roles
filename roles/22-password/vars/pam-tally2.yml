@@ -1,0 +1,5 @@
+---
+# /etc/pam.d/common_auth
+tally2_deny: 6
+tally2_unlock_time: 30
+

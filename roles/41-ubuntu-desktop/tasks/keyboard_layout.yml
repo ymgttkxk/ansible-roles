@@ -1,0 +1,19 @@
+---
+- name: japanese keyboard layout for console
+  lineinfile:
+    dest: /etc/default/keyboard
+    state: present
+    backrefs: yes
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  with_items:
+  - regexp: 'XKBLAYOUT=".*"'
+    line: 'XKBLAYOUT="jp"'
+  - regexp: 'XKBVARIANT=".*"'
+    line: 'XKBVARIANT=""'
+  - regexp: 'XKBOPTIONS=".*"'
+    line: 'XKBLAYOUT="terminate:ctrl_alt_bksp"'
+  - regexp: 'BACKSPACE=".*"'
+    line: 'BACKSPACE="guess"'
+  become: yes
+
