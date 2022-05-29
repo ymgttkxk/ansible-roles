@@ -1,0 +1,10 @@
+network:
+  ethernets:
+    eth0:
+      dhcp4: true
+      nameservers:
+        addresses: [{{ eth0_ns }}]
+      wakeonlan: true
+      dhcp6: true
+      optional: true
+

@@ -1,0 +1,19 @@
+---
+- name: debug event
+  debug: var=event
+
+- include_tasks: apt-proxy.yml
+  when: event == 'add'
+
+- include_tasks: admin.yml
+  when: event == 'add'
+
+- include_tasks: dhcp-ipv4.yml
+  when: event == 'add'
+
+- include_tasks: static-ipv4.yml
+  when: event == 'add'
+
+- include_tasks: security.yml
+  when: event == 'add'
+

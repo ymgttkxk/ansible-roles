@@ -1,0 +1,8 @@
+---
+### for Docker on LXD
+- name: add static ipv4 address
+  become: yes
+  command: "lxc config set {{ inventory_hostname }} security.nesting true"
+  delegate_to: localhost
+  when: sec_nest == 1
+

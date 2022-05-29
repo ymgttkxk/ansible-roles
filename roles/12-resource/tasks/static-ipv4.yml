@@ -1,0 +1,26 @@
+---
+- name: copy netplan file for static ipv4 address
+  template:
+    src: 80-eth0.yaml.j2
+    dest: /etc/netplan/80-eth0.yaml
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  when: static_ipv4 == 1
+
+- name: copy netplan file for DHCP ipv4 address
+  copy:
+    src: 80-dhcp-ipv4.yaml
+    dest: /etc/netplan/80-dhcp-ipv4.yaml
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+  when: static_ipv4 == 0
+
+- name: netplan reload
+  command: netplan apply
+  become: yes
+
+

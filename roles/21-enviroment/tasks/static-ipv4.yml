@@ -1,0 +1,16 @@
+---
+- name: copy netplan file for static ipv4 address
+  template:
+    src: 80-eth0.yaml.j2
+    dest: /etc/netplan/80-eth0.yaml
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+
+- name: netplan reload
+  command: netplan apply
+  become: yes
+
+~                                                                                                                           
+~                       
