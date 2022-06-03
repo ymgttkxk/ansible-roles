@@ -1,0 +1,19 @@
+---
+# set apt proxy file
+- name: add proxy file for apt
+  become: yes
+  template:
+    src: apt-proxy.j2
+    dest: /etc/apt/apt.conf.d/90proxy
+    owner: root
+    group: root
+    mode: 0644
+  when: proxy > 0 and apt_proxy_file is defined
+
+- name: delete proxy file for apt
+  file:
+    path: /etc/apt/apt.conf.d/90proxy
+    state: absent
+  become: true
+  when: proxy == 0 and apt_proxy_file is defined
+

@@ -1,0 +1,14 @@
+network:
+  version: 2
+  renderer: networkd  
+  ethernets:
+    {{ eth_name }}:
+      dhcp4: false
+      addresses: [{{ eth_ipv4 }}/24]
+      gateway4: {{ eth_gw }}
+      nameservers:
+        addresses: [{{ eth_ns }}]
+      wakeonlan: true
+      dhcp6: false
+      optional: true
+

@@ -1,0 +1,15 @@
+### use in netplan.yml
+type_ipv4=dhcp
+type_ipv4=static
+#type_ipv4=br-static
+#type_ipv4=br-dhcp
+
+### use in 80-dhcp-bridge.yaml.j2 80-dhcp.yaml 80-static-bridge.yaml.j2 80-static.yaml.j2
+eth_name=eth0
+eth_ipv4=192.168.0.254
+eth_mask=24
+eth_gw=192.168.0.1
+eth_ns=192.168.0.1
+### use in 80-dhcp-bridge.yaml.j2 80-static-bridge.yaml.j2
+br_name=br0
+

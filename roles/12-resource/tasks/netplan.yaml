@@ -1,0 +1,36 @@
+---
+- name: set netplan for static ipv4 address with bridge
+  template:
+    src: 80-static-bridge.yaml.j2
+    dest: /etc/netplan/80-{{ eth_name }}.yaml
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  when: type_ipv4 == "bridge"
+
+- name: set netplan for static ipv4 address
+  template:
+    src: 80-static.yaml.j2
+    dest: /etc/netplan/80-{{ eth_name }}.yaml
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  when: type_ipv4 == "static"
+
+- name: set netplan for DHCP ipv4 address
+  template:
+    src: 80-dhcp.yaml.j2
+    dest: /etc/netplan/80-{{ eth_name }}.yaml
+    owner: root
+    group: root
+    mode: 0644
+  become: true
+  when: type_ipv4 == "dhcp"
+
+- name: netplan reload
+  command: netplan apply
+  become: yes
+
+

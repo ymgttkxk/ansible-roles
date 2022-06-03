@@ -1,0 +1,10 @@
+---
+# set apt proxy file
+- name: add http proxy file for snap
+  become: yes
+  command: snap set system proxy.http={{ proxy_url }}
+
+- name: add https proxy file for snap
+  become: yes
+  command: snap set system proxy.https={{ proxy_url }}
+

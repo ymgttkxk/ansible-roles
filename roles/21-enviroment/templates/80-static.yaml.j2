@@ -1,0 +1,13 @@
+network:
+  version: 2
+  ethernets:
+    {{ eth_name }}:
+      dhcp4: false
+      addresses: [{{ eth_ipv4 }}/{{ eth_mask }}]
+      gateway4: {{ eth0_gw }}
+      nameservers:
+        addresses: [{{ eth_ns }}]
+      wakeonlan: true
+      dhcp6: false
+      optional: true
+
