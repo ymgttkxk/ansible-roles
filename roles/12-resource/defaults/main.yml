@@ -1,11 +1,25 @@
-### launch-container.yml
-pool: fixed
+### enable apt-proxy.yml  snap-proxy.yml 
+set_proxy: 0
 
-### apt-proxy.yml
-proxy: 0
-### [[user][:pass]@]host[:port]
-#apt-proxy:
+### security.yml
+set_security: 0
+
+### netplan.yml
+set_netplan: 1
+
+# proxy for apt and snap
+#proxy_url: http://[[user][:pass]@]host[:port]
 
 ### security.yml
 sec_nest: 0
 
+### use in netplan.yml
+# select eth_type is dhcp-bridge  dhcp  static-bridge  static
+eth_type: static
+### use in 80-dhcp-bridge.yaml.j2  80-dhcp.yaml  80-static-bridge.yaml.j2  80-static.yaml.j2
+eth_name: eth0
+eth_addrs: 192.168.0.254/24
+eth_gw: 192.168.0.1
+eth_ns: 192.168.0.1
+### use in 80-dhcp-bridge.yaml.j2  80-static-bridge.yaml.j2
+br_name: br0

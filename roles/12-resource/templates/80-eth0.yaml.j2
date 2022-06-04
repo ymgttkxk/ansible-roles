@@ -1,12 +1,15 @@
 network:
+  version: 2
   ethernets:
     eth0:
       dhcp4: false
-      addresses: [{{ eth0_ipv4 }}/24]
-      gateway4: {{ eth0_gw }}
-      nameservers:
-        addresses: [{{ eth0_ns }}]
-      wakeonlan: true
       dhcp6: true
+      addresses: [{{ eth_addrs }}]
+      routes:
+        - to: default
+          via: {{ eth_gw }}
+      nameservers:
+        addresses: [{{ eth_ns }}]
+      wakeonlan: true
       optional: true
 

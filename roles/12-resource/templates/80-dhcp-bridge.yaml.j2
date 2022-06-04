@@ -10,8 +10,10 @@ network:
       interfaces: [{{ eth_name }}]
       dhcp4: true
       dhcp6: false
-#      addresses: [{{ eth_ipv4 }}/{{ eth_mask }}]
-#      gateway4: {{ eth_gw }}
+#      addresses: [{{ eth_addrs }}]
+#      routes:
+#        - to: default
+#          via: {{ eth_gw }}
 #      nameservers:
 #        addresses: [{{ eth_ns }}]
       parameters:

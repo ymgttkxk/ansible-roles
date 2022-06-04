@@ -2,18 +2,19 @@
 - name: debug event
   debug: var=event
 
-- include_tasks: apt-proxy.yml
-  when: event == 'add'
+- name: set apt proxy
+  include_tasks: apt-proxy.yml
+  when: set_proxy == 1
 
-- include_tasks: admin.yml
-  when: event == 'add'
+- name: set snap proxy
+  include_tasks: snap-proxy.yml
+  when: set_proxy == 1
 
-- include_tasks: dhcp-ipv4.yml
-  when: event == 'add'
+- name: set security
+  include_tasks: security.yml
+  when: set_security == 1
 
-- include_tasks: static-ipv4.yml
-  when: event == 'add'
-
-- include_tasks: security.yml
-  when: event == 'add'
+- name: set netplan
+  include_tasks: netplan.yml
+  when: set_netplan == 1
 
