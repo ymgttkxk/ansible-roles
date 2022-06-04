@@ -1,0 +1,15 @@
+---
+- name: set netplan
+  template:
+    src: 80-{{ eth_type }}.yaml.j2
+    dest: /etc/netplan/80-{{ eth_name }}.yaml
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+
+- name: netplan reload
+  command: netplan apply
+  become: yes
+
+
